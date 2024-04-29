@@ -11,6 +11,7 @@ local inside_tp = regionlocking_Parent.inside_tp
 local outside_tp = regionlocking_Parent.outside_tp
 -----------------------  REPLICATED STORAGE HOUSE DATA
 local DynamicEvent = replicatedstorage.HouseData.DynamicEvent
+local updater = replicatedstorage.HouseData.updater
 local playerslist = replicatedstorage.HouseData.Players_In -- list directory
 
 
@@ -31,4 +32,11 @@ proxy_out.Triggered:Connect(function(plr)
         DynamicEvent:FireAllClients(plr)
     end
     stdlib.Teleport_To_Part_Location(plr.Character, inside_tp)
+end)
+
+
+players.PlayerAdded:Connect(function(plr)
+    print(plr.Name .. " has joined")
+    wait(1)
+    updater:FireClient(plr, playerslist:GetChildren())
 end)

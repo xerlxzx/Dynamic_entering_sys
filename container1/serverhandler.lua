@@ -14,6 +14,20 @@ local DynamicEvent = replicatedstorage.HouseData.DynamicEvent
 local updater = replicatedstorage.HouseData.updater
 local playerslist = replicatedstorage.HouseData.Players_In -- list directory
 
+local function log_entrance(plr)
+    local value = plr:FindFirstChild("INDOORS")
+    if value then
+        value.Value = true
+    end
+end
+
+local function log_exit(plr)
+    local value = plr:FindFirstChild("INDOORS")
+    if value then
+        value.Value = false
+    end
+end
+
 
 proxy_in.Triggered:Connect(function(plr)
     stdlib.Teleport_To_Part_Location(plr.Character, outside_tp) -- parameters take plrchar obj and end location part
@@ -23,6 +37,7 @@ proxy_in.Triggered:Connect(function(plr)
         plr:LoadCharacter()
         plr.Character:SetPrimaryPartCFrame(playerPos)
     end
+    log_exit(plr)
 end)
 
 
@@ -32,6 +47,7 @@ proxy_out.Triggered:Connect(function(plr)
         DynamicEvent:FireAllClients(plr)
     end
     stdlib.Teleport_To_Part_Location(plr.Character, inside_tp)
+    log_entrance(plr)
 end)
 
 

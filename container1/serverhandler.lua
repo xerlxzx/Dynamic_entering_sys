@@ -1,38 +1,34 @@
+----------------------- SERVICES
 local players = game:GetService("Players")
 local replicatedfirst = game:GetService("ReplicatedFirst")
 local replicatedstorage = game:GetService("ReplicatedStorage")
 local stdlib = require(replicatedfirst.library.stdlib)
-local Enter = replicatedstorage.HouseData.enter
-local Exit = replicatedstorage.HouseData.exit
-
-
-local regionlocking = script.Parent
-local proxy_out = regionlocking.outside.proxyblock.ProximityPrompt
-local proxy_in = regionlocking.inside.proxyblock.ProximityPrompt
-local def_region = regionlocking.def_region
-local inside_tp = regionlocking.inside_tp
-local outside_tp = regionlocking.outside_tp
-
-
-local Players_In = replicatedstorage.HouseData.Players_In -- list directory
-
+------------------------GROUP INSTANCES
+local regionlocking_Parent = script.Parent
+local proxy_out = regionlocking_Parent.outside.proxyblock.ProximityPrompt
+local proxy_in = regionlocking_Parent.inside.proxyblock.ProximityPrompt
+local inside_tp = regionlocking_Parent.inside_tp
+local outside_tp = regionlocking_Parent.outside_tp
+-----------------------  REPLICATED STORAGE HOUSE DATA
+local DynamicEvent = replicatedstorage.HouseData.DynamicEvent
+local playerslist = replicatedstorage.HouseData.Players_In -- list directory
 
 
 proxy_in.Triggered:Connect(function(plr)
-    local plrchar = plr.Character
-    stdlib.destroy_Players_In_House_List(plr, Players_In)
-    Exit:FireAllClients(plrchar, plr)
-    stdlib.Teleport_To_Part_Location(plrchar, outside_tp)
+    stdlib.Teleport_To_Part_Location(plr.Character, outside_tp) -- parameters take plrchar obj and end location part
+    stdlib.destroy_Players_In_House_List(plr, playerslist)  -- parameters take plr obj and table of the player list
+    local playerPos = plr.Character:GetPrimaryPartCFrame()
+    if playerPos then
+        plr:LoadCharacter()
+        plr.Character:SetPrimaryPartCFrame(playerPos)
+    end
 end)
 
+
 proxy_out.Triggered:Connect(function(plr)
-    local plrchar = plr.Character
-    local plrlist = Players_In:GetChildren()
-    stdlib.Create_Players_In_House_List(plr, Players_In)
-    print(Players_In:GetChildren())
-    if #plrlist >= 0 then
-        print("firing")
-        Enter:FireAllClients(Players_In:GetChildren())
+    stdlib.Create_Players_In_House_List(plr, playerslist)
+    if #playerslist:GetChildren() >= 0 then
+        DynamicEvent:FireAllClients(plr)
     end
-    stdlib.Teleport_To_Part_Location(plrchar, inside_tp)
+    stdlib.Teleport_To_Part_Location(plr.Character, inside_tp)
 end)

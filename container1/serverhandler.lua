@@ -31,7 +31,7 @@ end
 
 proxy_in.Triggered:Connect(function(plr)
     stdlib.Teleport_To_Part_Location(plr.Character, outside_tp) -- parameters take plrchar obj and end location part
-    stdlib.destroy_Players_In_House_List(plr, playerslist)  -- parameters take plr obj and table of the player list
+    stdlib.destroy_Players_In_House_List(plr, playerslist)      -- parameters take plr obj and table of the player list
     local playerPos = plr.Character:GetPrimaryPartCFrame()
     if playerPos then
         plr:LoadCharacter()
